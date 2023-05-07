@@ -1,0 +1,15 @@
+import board
+import audiobusio
+
+# Initialize the microphone
+mic = audiobusio.PDMIn(board.GP26, board.GP27, sample_rate=16000, bit_depth=16)
+
+# Main loop
+while True:
+    # Read audio data from the microphone
+    raw_samples = mic.record(512)
+    
+    # Process the audio data here...
+    
+    # Print the audio level (RMS) for debugging
+    print("Audio level:", mic.level)
