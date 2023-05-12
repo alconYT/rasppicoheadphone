@@ -1,6 +1,11 @@
 # rasppicoheadphone
 pt two with a pi pico 
-you will need pip install adafruit-circuitpython-audiobusio
+you will need :
+pip install adafruit-blinka
+pip install adafruit-circuitpython-ble
+pip install pyaudio
+pip install pybluez
+
 
 The first connection is the mic using the PDM microphone connected to pins `GP26` and `GP27` on the board. 
 
