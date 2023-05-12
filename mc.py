@@ -6,6 +6,7 @@ from adafruit_hid.keycode import Keycode
 import adafruit_ble
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
+import time
 
 # Set up the Bluetooth connection
 ble = adafruit_ble.BLERadio()
@@ -51,3 +52,4 @@ while True:
 
     # Wait a bit before checking again
     time.sleep(0.1)
+
