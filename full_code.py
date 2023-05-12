@@ -8,6 +8,9 @@ import adafruit_ble
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
 import time
+import pyaudio
+import wave
+import bluetooth
 
 # Set up the Bluetooth connection
 ble = adafruit_ble.BLERadio()
@@ -26,13 +29,31 @@ THRESHOLD = 5000
 # Initialize the microphone
 mic = audiobusio.PDMIn(board.GP26, board.GP27, sample_rate=16000, bit_depth=16)
 
-# Define the Bluetooth device names for each device
-DEVICE1_NAME = "Device1"
-DEVICE2_NAME = "Device2"
+# Define the Bluetooth device address of the receiver board
+receiver_address = "00:11:22:33:44:55"
 
-# Set up the device connection state variables
-device1_connected = False
-device2_connected = False
+# Set up the PyAudio audio output stream
+audio = pyaudio.PyAudio()
+stream = audio.open(format=pyaudio.paInt16, channels=1, rate=44100, output=True)
+
+# Open the audio file to play
+with wave.open("test.wav", "rb") as wavefile:
+    # Create a Bluetooth socket and connect to the receiver board
+    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    sock.connect((receiver_address, 1))
+
+    # Read and play the audio data in chunks
+    chunk_size = 1024
+    data = wavefile.readframes(chunk_size)
+    while data:
+        stream.write(data)
+        data = wavefile.readframes(chunk_size)
+
+    # Close the Bluetooth socket and audio output stream
+    sock.close()
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
 
 # Main loop
 while True:
@@ -42,10 +63,10 @@ while True:
         device_name = ble.connections[0].name
 
         # Set the device connection state based on the device name
-        if device_name == DEVICE1_NAME:
+        if device_name == "Device1":
             device1_connected = True
             device2_connected = False
-        elif device_name == DEVICE2_NAME:
+        elif device_name == "Device2":
             device1_connected = False
             device2_connected = True
 
